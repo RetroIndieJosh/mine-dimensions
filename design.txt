@@ -1,0 +1,17 @@
+UNITY
+- move character around world
+- regular update to SQL:
+        - select anything fired by the web player
+        - insert time, position, and heading 
+        - report player killed
+- create objects as needed to fire
+- win if you get to the goal
+
+WEB
+- table of all times, positions, and headings
+- update button to update table
+        - reports win if unity player killed
+- fire buttons for various weapons
+        - bomb: position
+        - missile: position, heading
+- win if you kill the player
