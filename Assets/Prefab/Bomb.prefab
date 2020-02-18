@@ -106,6 +106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c124b250fca42c4da880a8be97bf7dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_expandTimeSec: 1
-  m_expandSpeed: 1
+  m_expandTimeSec: 2
+  m_expandSpeed: 0.2
   m_explodeTime: 0

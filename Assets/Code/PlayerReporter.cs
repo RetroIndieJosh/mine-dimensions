@@ -6,11 +6,15 @@ using TMPro;
 
 public class PlayerReporter : TickUpdateComponent
 {
+    static public PlayerReporter instance = null;
+
     [Header("UI")]
     [SerializeField] private TextMeshProUGUI m_headingText = null;
     [SerializeField] private TextMeshProUGUI m_registeringText = null;
 
     private readonly string BASE_URL = "http://104.237.13.63/asym/unity.php";
+
+    public int CurTime => Mathf.CeilToInt(m_connectTime + timeElapsed);
 
     private Rigidbody m_body = null;
     private int m_id = -1;
@@ -60,7 +64,7 @@ public class PlayerReporter : TickUpdateComponent
                 {"speed", normVel2.magnitude.ToString("F2") },
                 {"head_x", normVel2.x.ToString("F2") },
                 {"head_z", normVel2.y.ToString("F2") },
-                {"time", Mathf.Ceil(m_connectTime + Time.time).ToString() },
+                {"time", CurTime.ToString() },
                 {"heading", Heading }
             }
         };
@@ -70,6 +74,9 @@ public class PlayerReporter : TickUpdateComponent
     }
 
     private void Awake() {
+        if (instance != null)
+            Destroy(instance.gameObject);
+        instance = this;
         m_body = GetComponent<Rigidbody>();
     }
 

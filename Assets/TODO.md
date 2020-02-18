@@ -1,1 +1,3 @@
 - convert heading angle to X degs N of E etc.
+- clamp bombs to floor
+- terrain

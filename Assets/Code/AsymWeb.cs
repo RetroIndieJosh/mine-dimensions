@@ -22,17 +22,11 @@ public class AsymWeb : MonoBehaviour
 
     [SerializeField, Tooltip("Must end with /")] private string m_baseUrl = "";
 
-    public string result {
-        get; private set;
-    }
-
     private void Awake() {
         instance = this;
     }
 
     public IEnumerator ProcessRequest(Request a_request, System.Action<string> a_callback = null) {
-        result = null;
-
         var url = m_baseUrl + a_request.ToString();
         Debug.Log($"URL: {url}");
         var www = UnityWebRequest.Get( url.ToString() );
@@ -43,7 +37,7 @@ public class AsymWeb : MonoBehaviour
             yield break;
         }
 
-        result = www.downloadHandler.text.Trim();
+        var result = www.downloadHandler.text.Trim();
         if (a_callback == null)
             yield break;
         a_callback.Invoke(result);
