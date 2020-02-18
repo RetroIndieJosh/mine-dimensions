@@ -39,7 +39,9 @@ public class PlayerReporter : TickUpdateComponent
             var octant = Mathf.RoundToInt((8 * angle / (2 * Mathf.PI)) + 8) % 8;
             var dir = (Direction)octant;
 
-            return $"{dir,2}";
+            var degAngle = (Mathf.Rad2Deg * angle) + 180f;
+
+            return $"{dir,2} {degAngle:000}";
         }
     }
 
@@ -47,16 +49,23 @@ public class PlayerReporter : TickUpdateComponent
         if (!m_isRegistered)
             return;
 
-        var x = transform.position.x.ToString("F2");
-        var z = transform.position.z.ToString("F2");
         var vel2 = new Vector2(m_body.velocity.x, m_body.velocity.z);
-        var speed = vel2.magnitude.ToString("F2");
         var normVel2 = vel2.normalized;
-        var headingX = normVel2.x.ToString("F2");
-        var headingZ = normVel2.y.ToString("F2");
-        var time = Mathf.Ceil(m_connectTime + Time.time);
-        var url = BASE_URL + $"?action=add&id={m_id}&x={x}&z={z}&time={time}&heading='{Heading}'&head_x={headingX}&head_z={headingZ}&speed={speed}";
-        var updateServer = AsymWeb.instance.Request(url);
+        var request = new Request {
+            args = new Dictionary<string, string>() {
+                {"action", "add" },
+                {"id", m_id.ToString() },
+                {"x", transform.position.x.ToString("F2") },
+                {"z", transform.position.z.ToString("F2") },
+                {"speed", normVel2.magnitude.ToString("F2") },
+                {"head_x", normVel2.x.ToString("F2") },
+                {"head_z", normVel2.y.ToString("F2") },
+                {"time", Mathf.Ceil(m_connectTime + Time.time).ToString() },
+                {"heading", Heading }
+            }
+        };
+
+        var updateServer = AsymWeb.instance.ProcessRequest(request);
         StartCoroutine(updateServer);
     }
 
@@ -71,7 +80,13 @@ public class PlayerReporter : TickUpdateComponent
             m_registeringText.enabled = true;
 
         var url = BASE_URL + "?action=user&name=bob";
-        var login = AsymWeb.instance.Request(url, Register);
+        var request = new Request {
+            args = new Dictionary<string, string>() {
+                {"action", "user" },
+                {"name", "bob" }
+            }
+        };
+        var login = AsymWeb.instance.ProcessRequest(request, Register);
         StartCoroutine(login);
     }
 

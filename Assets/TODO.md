@@ -1,0 +1,1 @@
+- convert heading angle to X degs N of E etc.

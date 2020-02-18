@@ -610,6 +610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bab9d685a02d3844581c10fd844915d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_baseUrl: http://104.237.13.63/asym/
 --- !u!4 &1028309722
 Transform:
   m_ObjectHideFlags: 0
