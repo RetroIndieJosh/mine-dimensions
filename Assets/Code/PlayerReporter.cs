@@ -13,7 +13,9 @@ public class PlayerReporter : TickUpdateComponent
     [SerializeField] private TextMeshProUGUI m_registeringText = null;
 
     [Header("Game")]
-    [SerializeField] private Vector3 m_goal;
+    [SerializeField] private float m_minPos = -100f;
+    [SerializeField] private float m_maxPos = 100f;
+    [SerializeField] private GameObject m_goalPrefab = null;
 
     private readonly string BASE_URL = "http://104.237.13.63/asym/unity.php";
 
@@ -23,8 +25,11 @@ public class PlayerReporter : TickUpdateComponent
     }
 
     private Rigidbody m_body = null;
-    private bool m_isRegistered = false;
     private int m_connectTime = 0;
+    private Vector3 m_goalPos = Vector3.zero;
+    private GameObject m_goal = null;
+    private bool m_isRegistered = false;
+    private int m_score = 0;
 
     enum Direction
     {
@@ -46,7 +51,8 @@ public class PlayerReporter : TickUpdateComponent
 
             var angle = Mathf.Atan2(vel2.y, vel2.x);
             var octant = Mathf.RoundToInt((8 * angle / (2 * Mathf.PI)) + 8) % 8;
-            var dir = (Direction)octant;
+            var dir = ((Direction)octant).ToString();
+            dir = dir.PadLeft(2, '-');
 
             var degAngle = (Mathf.Rad2Deg * angle) + 180f;
 
@@ -88,17 +94,11 @@ public class PlayerReporter : TickUpdateComponent
     protected override void Start() {
         base.Start();
 
-        var min = -100f;
-        var max = 100f;
+        GenerateGoal();
 
-        var x = Random.Range(min, max);
+        var x = Random.Range(m_minPos, m_maxPos);
         var y = transform.position.y;
-        var z = Random.Range(min, max);
-        m_goal = new Vector3(x, y, z);
-
-        x = Random.Range(min, max);
-        y = transform.position.y;
-        z = Random.Range(min, max);
+        var z = Random.Range(m_minPos, m_maxPos);
         transform.position = new Vector3(x, y, z);
 
         if( m_registeringText != null )
@@ -120,9 +120,23 @@ public class PlayerReporter : TickUpdateComponent
         if (m_playerInfoText != null) {
             var x = transform.position.x;
             var z = transform.position.z;
-            var distance = Vector3.Distance(transform.position, m_goal);
-            m_playerInfoText.text = $"({x:00.0}, {z:00.0})\n{distance:000}m\n{Heading}";
+            var distance = Vector3.Distance(transform.position, m_goalPos);
+            m_playerInfoText.text = $"{x:000.0}, {z:000.0}\n{distance:000}m\n{Heading}\nScore: {m_score:000}";
         }
+
+        if (Vector3.Distance(transform.position, m_goalPos) < 1f) {
+            ++m_score;
+            Destroy(m_goal);
+            GenerateGoal();
+        }
+    }
+
+    private void GenerateGoal() {
+        var x = Random.Range(m_minPos, m_maxPos);
+        var y = transform.position.y;
+        var z = Random.Range(m_minPos, m_maxPos);
+        m_goalPos = new Vector3(x, y, z);
+        m_goal = Instantiate(m_goalPrefab, m_goalPos, Quaternion.identity);
     }
 
     private void Register(string a_result) {
