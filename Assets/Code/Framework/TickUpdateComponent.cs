@@ -10,6 +10,11 @@ public class TickUpdateComponent : TimedComponent
 
     protected virtual void TickUpdate() { }
 
+    protected override void Start() {
+        base.Start();
+        TickUpdate();
+    }
+
     protected override void Update() {
         base.Update();
         if (timeElapsed < m_tickLengthSec)

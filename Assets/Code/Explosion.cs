@@ -2,17 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bomb : TimedComponent
+public class Explosion : MonoBehaviour
 {
     [SerializeField] private float m_expandTimeSec = 0.5f;
     [SerializeField] private float m_expandSpeed = 0.1f;
-    [SerializeField] private int m_explodeTime = int.MaxValue;
 
-    protected override void Update() {
-        base.Update();
-        if (timeElapsed >= m_explodeTime)
-            Explode();
-    }
+    private bool m_isExploded = false;
 
     private IEnumerator Expand() {
         var expandTimeElapsed = 0f;
@@ -24,7 +19,10 @@ public class Bomb : TimedComponent
         Destroy(gameObject);
     }
 
-    private void Explode() {
+    public void Explode() {
+        if (m_isExploded)
+            return;
+        m_isExploded = true;
         StartCoroutine(Expand());
     }
 }
