@@ -30,6 +30,7 @@ public class PlayerReporter : TickUpdateComponent
     private GameObject m_goal = null;
     private bool m_isRegistered = false;
     private int m_score = 0;
+    private int m_highScore = 0;
 
     enum Direction
     {
@@ -51,13 +52,16 @@ public class PlayerReporter : TickUpdateComponent
 
             var angle = Mathf.Atan2(vel2.y, vel2.x);
             var octant = Mathf.RoundToInt((8 * angle / (2 * Mathf.PI)) + 8) % 8;
-            var dir = ((Direction)octant).ToString();
-            dir = dir.PadLeft(2, '-');
+            var dir = (Direction)octant;
 
             var degAngle = (Mathf.Rad2Deg * angle) + 180f;
 
             return $"{dir,2} {degAngle:000}";
         }
+    }
+
+    public void ResetScore() {
+        m_score = 0;
     }
 
     protected override void TickUpdate() {
@@ -121,11 +125,14 @@ public class PlayerReporter : TickUpdateComponent
             var x = transform.position.x;
             var z = transform.position.z;
             var distance = Vector3.Distance(transform.position, m_goalPos);
-            m_playerInfoText.text = $"{x:000.0}, {z:000.0}\n{distance:000}m\n{Heading}\nScore: {m_score:000}";
+            m_playerInfoText.text = $"{x:000.0}, {z:000.0}\n{distance:000}m\n{Heading}\n"
+                + $"Score: {m_score:000} ({m_highScore:000})";
         }
 
         if (Vector3.Distance(transform.position, m_goalPos) < 1f) {
             ++m_score;
+            if (m_score > m_highScore)
+                m_highScore = m_score;
             Destroy(m_goal);
             GenerateGoal();
         }

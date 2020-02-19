@@ -16,7 +16,7 @@ public class Mine : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         Debug.Log($"Mine #{Id} triggered");
-        //Destroy(gameObject);
+        PlayerReporter.instance.ResetScore();
         var request = new Request() {
             args = new Dictionary<string, string>() {
                 {"action", "deactivate" },
