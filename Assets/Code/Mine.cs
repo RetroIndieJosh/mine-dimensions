@@ -24,7 +24,7 @@ public class Mine : MonoBehaviour
                 {"target", PlayerReporter.instance.Id.ToString() }
             }
         };
-        var report = AsymWeb.instance.ProcessRequest(request, (str) => { Destroy(gameObject); });
+        var report = AsymWeb.instance.ProcessRequest(request, (str) => { gameObject.SetActive(false); });
         StartCoroutine(report);
     }
 }
