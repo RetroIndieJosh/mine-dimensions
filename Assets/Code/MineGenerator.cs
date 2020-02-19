@@ -20,10 +20,13 @@ public class MineGenerator : TickUpdateComponent
     }
 
     private void GenerateMine(int a_id, float a_posX, float a_posZ) {
+        var pos = new Vector3(a_posX, 100f, a_posZ);
         // TODO clamp to ground
-        var y = 0f;
-        Debug.Log($"Generate mine {a_id} at ({a_posX}, {y}, {a_posZ})");
-        var pos = new Vector3(a_posX, y, a_posZ);
+        if (Physics.Raycast(pos, Vector3.down, out var hit) == false)
+            return;
+        Debug.Log($"Ground position: {hit.point}");
+        pos.y = hit.point.y;
+        Debug.Log($"Generate mine {a_id} at {pos}");
         var mine = Instantiate(m_minePrefab, pos, Quaternion.identity);
         mine.Id = a_id;
         m_mineDict.Add(a_id, mine);

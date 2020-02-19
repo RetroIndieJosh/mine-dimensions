@@ -120,6 +120,11 @@ public class PlayerReporter : TickUpdateComponent
     }
 
     protected override void Update() {
+        var pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, m_minPos, m_maxPos);
+        pos.z = Mathf.Clamp(pos.z, m_minPos, m_maxPos);
+        transform.position = pos;
+
         base.Update();
         if (m_playerInfoText != null) {
             var x = transform.position.x;
