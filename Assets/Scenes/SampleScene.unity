@@ -1038,11 +1038,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15b52f8a0e837714cb9db76b8254bd4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_tickLengthSec: 10
+  m_tickLengthSec: 3
   m_playerInfoText: {fileID: 1399126836}
   m_registeringText: {fileID: 1055614026}
-  m_minPos: -500
-  m_maxPos: 500
+  m_minPos: -250
+  m_maxPos: 250
   m_goalPrefab: {fileID: 3023666846733634155, guid: 90e6aa69b7e1b4040aa79c1b162717cf,
     type: 3}
 --- !u!1 &1399126834
@@ -1440,7 +1440,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1947745141}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -500, y: -63, z: -500}
+  m_LocalPosition: {x: -250, y: -61, z: -250}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
