@@ -60,8 +60,18 @@ public class PlayerReporter : TickUpdateComponent
         }
     }
 
-    public void ResetScore() {
+    private void ResetPos() {
+        var pos = Vector3.zero;
+        pos.x = Random.Range(m_minPos, m_maxPos);
+        pos.z = Random.Range(m_minPos, m_maxPos);
+        pos.y = GetFloor(pos);
+        transform.position = pos;
+    }
+
+    public void Die() {
         m_score = 0;
+        m_isRegistered = false;
+        TryRegister();
     }
 
     protected override void TickUpdate() {
@@ -97,15 +107,12 @@ public class PlayerReporter : TickUpdateComponent
 
     protected override void Start() {
         base.Start();
+        TryRegister();
+    }
 
+    private void TryRegister() {
         GenerateGoal();
-
-        var pos = Vector3.zero;
-        pos.x = Random.Range(m_minPos, m_maxPos);
-        pos.z = Random.Range(m_minPos, m_maxPos);
-        Physics.Raycast(pos, Vector3.down, out var hit);
-        pos.y = hit.point.y + 1f;
-        transform.position = pos;
+        ResetPos();
 
         if( m_registeringText != null )
             m_registeringText.enabled = true;
@@ -132,24 +139,41 @@ public class PlayerReporter : TickUpdateComponent
             var x = transform.position.x;
             var z = transform.position.z;
             var distance = Vector3.Distance(transform.position, m_goalPos);
-            m_playerInfoText.text = $"{x:000.0}, {z:000.0}\n{distance:000}m\n{Heading}\n"
+            m_playerInfoText.text = $"ID: {Id}\n{x:000.0}, {z:000.0}\n{distance:000}m\n{Heading}\n"
                 + $"Score: {m_score:000} ({m_highScore:000})";
         }
 
         if (Vector3.Distance(transform.position, m_goalPos) < 1f) {
             ++m_score;
-            if (m_score > m_highScore)
+            if (m_score > m_highScore) {
                 m_highScore = m_score;
+                var request = new Request() {
+                    args = {
+                        { "action", "score" },
+                        {"id", Id.ToString() },
+                        {"score", m_score.ToString() }
+                    }
+                };
+                var updateScore = AsymWeb.instance.ProcessRequest(request);
+                StartCoroutine(updateScore);
+            }
             Destroy(m_goal);
             GenerateGoal();
         }
     }
 
+    private float GetFloor(Vector3 pos) {
+        Physics.Raycast(pos, Vector3.down, out var hit);
+        return hit.point.y;
+    }
+
     private void GenerateGoal() {
-        var x = Random.Range(m_minPos, m_maxPos);
-        var y = transform.position.y;
-        var z = Random.Range(m_minPos, m_maxPos);
-        m_goalPos = new Vector3(x, y, z);
+        if (m_goal != null)
+            Destroy(m_goal);
+        m_goalPos = Vector3.zero;
+        m_goalPos.x = Random.Range(m_minPos, m_maxPos);
+        m_goalPos.z = Random.Range(m_minPos, m_maxPos);
+        m_goalPos.y = GetFloor(m_goalPos);
         m_goal = Instantiate(m_goalPrefab, m_goalPos, Quaternion.identity);
     }
 

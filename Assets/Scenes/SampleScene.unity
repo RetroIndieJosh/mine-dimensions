@@ -1041,8 +1041,8 @@ MonoBehaviour:
   m_tickLengthSec: 3
   m_playerInfoText: {fileID: 1399126836}
   m_registeringText: {fileID: 1055614026}
-  m_minPos: -250
-  m_maxPos: 250
+  m_minPos: -10
+  m_maxPos: 10
   m_goalPrefab: {fileID: 3023666846733634155, guid: 90e6aa69b7e1b4040aa79c1b162717cf,
     type: 3}
 --- !u!1 &1399126834
