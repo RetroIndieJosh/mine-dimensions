@@ -100,10 +100,12 @@ public class PlayerReporter : TickUpdateComponent
 
         GenerateGoal();
 
-        var x = Random.Range(m_minPos, m_maxPos);
-        var y = transform.position.y;
-        var z = Random.Range(m_minPos, m_maxPos);
-        transform.position = new Vector3(x, y, z);
+        var pos = Vector3.zero;
+        pos.x = Random.Range(m_minPos, m_maxPos);
+        pos.z = Random.Range(m_minPos, m_maxPos);
+        Physics.Raycast(pos, Vector3.down, out var hit);
+        pos.y = hit.point.y + 1f;
+        transform.position = pos;
 
         if( m_registeringText != null )
             m_registeringText.enabled = true;
